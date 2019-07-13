@@ -1,0 +1,124 @@
+body {
+    background: rgb(236, 236, 236);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+section {
+
+}
+
+.header {
+background: white;
+height: 20px;
+padding: 40px;
+margin-bottom: 30px;
+font-weight: 900;
+}
+
+.footer {
+    background: black;
+    color: white;
+    padding: 40px;
+    font-weight: 900;
+}
+
+
+.message-area {
+    margin-left: auto;
+    margin-right: auto;
+    background: whitesmoke;
+    padding: 20px;
+    clear: both;
+    height: 70px;
+    width: 800px;
+    position: relative;
+}
+
+textarea {
+    font-size: 2em;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 555px;
+    resize: none;
+    padding: 20px;
+}
+
+.send-message-btn{
+    background: rgb(95, 170, 204);
+    font-size: 1.5em;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+    cursor: pointer;
+    border: 1px solid rgb(95, 170, 204);
+    transition: 0.3s;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    left: 600px;
+    padding-top: 34px;
+}
+
+.send-message-btn:hover {
+    border: 1px solid rgb(95, 170, 204);
+    background: none;
+    color: rgb(95, 170, 204);
+    transition: 0.3s;
+}
+
+.profile-header {
+    height: 200px;
+    margin-bottom: 20px;
+    background: white;
+    width: 840px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-picture {
+    max-height: 150px;
+    border-radius: 50%;
+    border: 2px solid black;
+}
+
+.profile-header-object {
+    background: white;
+    float: left;
+    margin: 5px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.profile-header-object-image{
+    padding: 0px;
+    float: left;
+    margin-top: 22px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.feed {
+    background: whitesmoke;
+    margin-top: 10px;
+    min-height: 800px;
+    margin-bottom: 50px;
+    padding: 20px;
+    clear: both;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feed p {
+    background: white;
+    padding: 20px;
+}
+
+span {
+    color: darkgrey;
+}
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */
