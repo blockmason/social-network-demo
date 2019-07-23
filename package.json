@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@blockmason/link-sdk": "^0.1.4"
+    "@blockmason/link-sdk": "^0.1.4",
+    "dotenv": "^8.0.0",
+    "node-fetch": "^2.6.0"
   }
 }
