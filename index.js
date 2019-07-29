@@ -1,74 +1,64 @@
 require('dotenv').config();
-
-document.addEventListener("DOMContentLoaded", function (event) {
 const { link } = require('@blockmason/link-sdk');
 const fetch = require('node-fetch');
-
 const project = link({
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET
 }, {
-    fetch
-});
-
-messages = [];
-
-// Set message
-async function postMessage(newMessage) {
-    await project.post('/postMessage', {
-        message: newMessage,
-    }).then(() => {
-        removeMessages();
-        messages = [];
-        
-        var allMessages = project.get('/events/Message').then((message) => {
-            return message.data;
-        });
-
-        allMessages.then(value => {
-            value.forEach(message => {
-                messages.push(message);
-            })
-        }).then(() => {
-            console.log('We have the new messages');
-            console.log(messages);
-            printMessages(messages); 
-        });
+        fetch
     });
-}
+    
+document.addEventListener("DOMContentLoaded", function (event) {
+    feed = document.getElementById('feed');
+    textArea = document.getElementById("textarea");
+    messages = [];
 
-// Get All Messages
-var allMessages = project.get('/events/Message').then((message) => {
+    // Set message
+    async function postMessage(newMessage) {
+        await project.post('/postMessage', {
+            message: newMessage,
+        }).then(() => {
+            removeMessages();
+            messages = [];
+
+            var allMessages = project.get('/events/Message').then((message) => {
+                return message.data;
+            });
+
+            allMessages.then(value => {
+                value.forEach(message => {
+                    messages.push(message);
+                })
+            }).then(() => {
+                console.log('We have the new messages');
+                console.log(messages);
+                printMessages(messages);
+            });
+        });
+    }
+
+    // Get All Messages
+    var allMessages = project.get('/events/Message').then((message) => {
         return message.data;
     });
 
 
-allMessages.then(value => {
-    value.forEach(message => {
-        messages.push(message);
-    })
-}).then(() => {
-   printMessages(messages); 
-});
-
-
-// Set Profile
-async function setProfile() {
-    await project.post('/setProfile', {
-        displayName: 'Mason',
-        avatarURL: 'https://blockmason.io/wp-content/uploads/2018/11/BMLogo_no-words_IconColor.png0x1111222233334444555566667777888899990000'
+    allMessages.then(value => {
+        value.forEach(message => {
+            messages.push(message);
+        })
+    }).then(() => {
+        printMessages(messages);
     });
-}
 
 
-// // Get All Profiles
-// project.get('/getProfile').then((message) => {
-//     console.log(message);
-// });
-
-
-    feed = document.getElementById('feed');
-    textArea = document.getElementById("textarea");
+    // Set Profile
+    async function setProfile() {
+        await project.post('/setProfile', {
+            displayName: 'Mason',
+            avatarURL: 'https://blockmason.io/wp-content/uploads/2018/11/BMLogo_no-words_IconColor.png0x1111222233334444555566667777888899990000'
+        });
+    }
 
     function printMessages() {
         messages.forEach(message => {

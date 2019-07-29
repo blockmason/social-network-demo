@@ -8146,18 +8146,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
+var _require = require('@blockmason/link-sdk'),
+    link = _require.link;
+
+var fetch = require('node-fetch');
+
+var project = link({
+  clientId: "xIQD-Ke5E9OVGilttPT5-8noj7CBbppH-Haa2UOqF9s",
+  clientSecret: "bWUVHLi3MdckDXDste1GTIzZ5sf/su65CswKuxFrx+QCKUcjFaVwmngB9hlX+3H"
+}, {
+  fetch: fetch
+});
 document.addEventListener("DOMContentLoaded", function (event) {
-  var _require = require('@blockmason/link-sdk'),
-      link = _require.link;
-
-  var fetch = require('node-fetch');
-
-  var project = link({
-    clientId: "xIQD-Ke5E9OVGilttPT5-8noj7CBbppH-Haa2UOqF9s",
-    clientSecret: "bWUVHLi3MdckDXDste1GTIzZ5sf/su65CswKuxFrx+QCKUcjFaVwmngB9hlX+3H"
-  }, {
-    fetch: fetch
-  });
+  feed = document.getElementById('feed');
+  textArea = document.getElementById("textarea");
   messages = []; // Set message
 
   function postMessage(_x) {
@@ -8216,11 +8218,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   function setProfile() {
     return _setProfile.apply(this, arguments);
-  } // // Get All Profiles
-  // project.get('/getProfile').then((message) => {
-  //     console.log(message);
-  // });
-
+  }
 
   function _setProfile() {
     _setProfile = _asyncToGenerator(
@@ -8245,9 +8243,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }));
     return _setProfile.apply(this, arguments);
   }
-
-  feed = document.getElementById('feed');
-  textArea = document.getElementById("textarea");
 
   function printMessages() {
     messages.forEach(function (message) {
@@ -8314,7 +8309,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56453" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51857" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

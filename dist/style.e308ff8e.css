@@ -8,11 +8,13 @@ section {
 }
 
 .header {
-background: white;
+background: rgb(85, 174, 233);
 height: 20px;
-padding: 40px;
-margin-bottom: 30px;
-font-weight: 900;
+padding: 15px;
+line-height: 1.4;
+margin-bottom: 10px;
+font-weight: 600;
+color: white;
 }
 
 .footer {
@@ -35,7 +37,6 @@ font-weight: 900;
 }
 
 textarea {
-    font-size: 2em;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -46,42 +47,36 @@ textarea {
 }
 
 .send-message-btn{
-    background: rgb(95, 170, 204);
-    font-size: 1.5em;
+    background: rgb(85, 174, 233);
     text-align: center;
-    line-height: 40px;
+    line-height: 70px;
     color: white;
     cursor: pointer;
-    border: 1px solid rgb(95, 170, 204);
+    border: 1px solid rgb(85, 174, 233);
     transition: 0.3s;
     position: absolute;
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-    left: 600px;
-    padding-top: 34px;
+    right: 20px;
+    top: 20px;
+    bottom: 20px;
+    left: 620px;
+    border-radius: 10px;
 }
 
 .send-message-btn:hover {
-    border: 1px solid rgb(95, 170, 204);
+    border: 1px solid rgb(85, 174, 233);
     background: none;
     color: rgb(95, 170, 204);
     transition: 0.3s;
 }
 
 .profile-header {
-    height: 200px;
-    margin-bottom: 20px;
+    height: 165px;
+    margin-bottom: 10px;
     background: white;
     width: 840px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.profile-picture {
-    max-height: 150px;
-    border-radius: 50%;
-    border: 2px solid black;
+    border-radius: 15px;
 }
 
 .profile-header-object {
@@ -89,7 +84,10 @@ textarea {
     float: left;
     margin: 5px;
     padding: 20px;
-    margin-top: 70px;
+    margin-top: 50px;
+    font-size: 2em;
+    font-weight: bold;
+    color: darkslategray;
 }
 
 .profile-header-object-image{
@@ -98,22 +96,26 @@ textarea {
     margin-top: 22px;
     margin-left: 20px;
     margin-right: 20px;
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    border: 1px solid black;
+    border-radius: 4px;
 }
 
 .feed {
-    background: whitesmoke;
+    background: white;
     margin-top: 10px;
     min-height: 800px;
     margin-bottom: 50px;
-    padding: 20px;
     clear: both;
-    width: 800px;
+    width: 840px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .feed p {
-    background: white;
+    border-bottom: 1px black solid;
     padding: 20px;
 }
 
