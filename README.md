@@ -240,7 +240,7 @@ Copy and paste in an Ethereum wallet address (for example `0xca14563Ce2585B6026b
 
 When running, your DApp should look similar to the following:
 
-![Social Network](images/bc_socialnetwork.png)
+![Social Network](images/bc_social_network.png)
 
 **Congrats** on getting your first DApp running from scratch using Link!
 
