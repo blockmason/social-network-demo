@@ -6,8 +6,8 @@ const project = link({
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET
 }, {
-        fetch
-    });
+    fetch
+});
 
 //When Document Ready
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         return new Promise(resolve => {
             resolve(project.get('/getProfile', {
-                "id": userID}));
+                "id": userID
+            }));
         })
     }
 

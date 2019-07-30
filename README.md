@@ -93,8 +93,8 @@ const project = link({
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET
 }, {
-        fetch
-    });
+    fetch
+});
 ```
 We import the `@blockmason/link-sdk` package. We then need to provide the `clientId` and `clientSecret` from Link in order to use the `.get` and `.post` methods provided by the `link` object. 
 
