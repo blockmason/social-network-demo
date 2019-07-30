@@ -154,108 +154,108 @@ function getProfile(userID) {
 Here, we will call the `GET /getProfile` API endpoint to retrive the profile information of the message poster. 
 
 ```
- // Get All Messages
-    async function getMessages() {
-        var allMessages = project.get('/events/Message').then((message) => {
-            return message.data;
-        });
+// Get All Messages
+async function getMessages() {
+    var allMessages = project.get('/events/Message').then((message) => {
+        return message.data;
+    });
 
-        return allMessages;
-    }
+    return allMessages;
+}
 
-    // Format Messages into message array and Print
-    async function formatMessages(unformatedMessages) {
+// Format Messages into message array and Print
+async function formatMessages(unformatedMessages) {
 
-        unformatedMessages.then(value => {
-            value.forEach(message => {
-                messages.push(message);
-            })
-        }).then(() => {
-            printMessages(messages);
-        });
-    }
-
-    // Set message
-    async function postMessage(newMessage) {
-        await project.post('/postMessage', {
-            message: newMessage,
-        }).then(() => {
-            removeMessages();
-            messages = [];
-
-            updatedMessages = getMessages();
-            formatMessages(updatedMessages);
-        });
-    }
-
-
-    // Set Profile
-    async function setProfile(idOfProfile) {
-        // Set some profile settings for the demo
-        const profilePost = {
-            "id": idOfProfile,
-            "displayName": "Mason Link",
-            "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
-        }
-
-        await project.post('/setProfile', profilePost);
-    }
-    // run this once to set up your profile
-    // setProfile(0);
-
-    // Get the profile data based on ID and update profile
-    function getProfile(userID) {
-
-        return new Promise(resolve => {
-            resolve(project.get('/getProfile', {
-                "id": userID}));
+    unformatedMessages.then(value => {
+        value.forEach(message => {
+            messages.push(message);
         })
+    }).then(() => {
+        printMessages(messages);
+    });
+}
+
+// Set message
+async function postMessage(newMessage) {
+    await project.post('/postMessage', {
+        message: newMessage,
+    }).then(() => {
+        removeMessages();
+        messages = [];
+
+        updatedMessages = getMessages();
+        formatMessages(updatedMessages);
+    });
+}
+
+
+// Set Profile
+async function setProfile(idOfProfile) {
+    // Set some profile settings for the demo
+    const profilePost = {
+        "id": idOfProfile,
+        "displayName": "Mason Link",
+        "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
     }
 
-    // Print profile data to profile
-    async function printProfile() {
-        var profileData = await getProfile(currentUser);
-        var profileDisplayName = document.createTextNode(profileData.displayName);
-        profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
-        profileUsername.appendChild(profileDisplayName);
+    await project.post('/setProfile', profilePost);
+}
+// run this once to set up your profile
+// setProfile(0);
+
+// Get the profile data based on ID and update profile
+function getProfile(userID) {
+
+    return new Promise(resolve => {
+        resolve(project.get('/getProfile', {
+            "id": userID}));
+    })
+}
+
+// Print profile data to profile
+async function printProfile() {
+    var profileData = await getProfile(currentUser);
+    var profileDisplayName = document.createTextNode(profileData.displayName);
+    profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
+    profileUsername.appendChild(profileDisplayName);
+}
+
+// Format for message element
+function printMessages() {
+    //Update the number of posts
+    profilePosts.innerText = ("Number of Posts: " + messages.length);
+
+    messages.forEach(async message => {
+        var messageUserData = await getProfile(message.senderId);
+        var messageUser = document.createTextNode(messageUserData.displayName);
+        var messageText = document.createTextNode('"' + message.message + '" — ');
+        var divElement = document.createElement("DIV");
+        var pElement = document.createElement("P");
+        var messagesFormated = divElement.appendChild(pElement);
+
+        messagesFormated.appendChild(messageText);
+        messagesFormated.appendChild(messageUser);
+
+        feed.appendChild(messagesFormated)
+    });
+}
+
+// Clear existing messages
+function removeMessages() {
+    console.log('Cleared All Messages')
+    while (feed.firstChild) {
+        feed.removeChild(feed.firstChild);
     }
+}
 
-    // Format for message element
-    function printMessages() {
-        //Update the number of posts
-        profilePosts.innerText = ("Number of Posts: " + messages.length);
-
-        messages.forEach(async message => {
-            var messageUserData = await getProfile(message.senderId);
-            var messageUser = document.createTextNode(messageUserData.displayName);
-            var messageText = document.createTextNode('"' + message.message + '" — ');
-            var divElement = document.createElement("DIV");
-            var pElement = document.createElement("P");
-            var messagesFormated = divElement.appendChild(pElement);
-
-            messagesFormated.appendChild(messageText);
-            messagesFormated.appendChild(messageUser);
-
-            feed.appendChild(messagesFormated)
-        });
+// The function to submit text from textArea
+function submitText() {
+    if (textArea.value.trim() != "") {
+        messageObject = textArea.value.trim();
+        postMessage(messageObject);
+        textArea.value = "";
     }
-
-    // Clear existing messages
-    function removeMessages() {
-        console.log('Cleared All Messages')
-        while (feed.firstChild) {
-            feed.removeChild(feed.firstChild);
-        }
-    }
-
-    // The function to submit text from textArea
-    function submitText() {
-        if (textArea.value.trim() != "") {
-            messageObject = textArea.value.trim();
-            postMessage(messageObject);
-            textArea.value = "";
-        }
-    }
+}
 ```
 Find the complete code in `index.js`. 
 
@@ -276,8 +276,6 @@ Note the following:
 * `Parcel` will create the following folders in your project folder: `.cache/` and `dist/`. If you run into any errors while running your DApp, delete these folders and run `npm start` again.
 
 Copy and paste in an Ethereum wallet address (for example `0xca14563Ce2585B6026b7691f264ac2173CdEC530`) and try to own one of the Collectible Stamps. *Note:* if you do not enter in a valid address, you will see the following error alert pop up:
-
-![Address Error Alert](images/address_error_alert.png)
 
 
 When running, your DApp should look similar to the following:
