@@ -64,11 +64,6 @@ contract SocialNetwork {
   }
 }
 ```
-* Ownership is recorded in a mapping called `ownerOf` between an asset name (some string) and an Ethereum address (a 20 byte value), which looks something like `0xca14563Ce2585B6026b7691f264ac2173CdEC530` for example.
-  
-* Using the keyword `public` for the `ownerOf` mapping object automatically provides us with a getter for that object.
-
-* The `authority` in this case will be a Link managed Ethereum account.
 
 > Sign into your Link account and copy and paste the `Social-Network.sol` contract code into the Link IDE. We'll call this project `Social-Network`. 
 
@@ -82,140 +77,187 @@ contract SocialNetwork {
 
 ### Configure DApp Front-End
 
-Taking a look inside the `src/` folder, we see that it is a very basic JavaScript app with data pulled in from `stamps.json`. We also make use of jQuery and Bootstrap in our code.
-
-> Take a look at `index.html` and `js/app.js` code templates, which is where we will focus our efforts.
+> Take a look at `index.html` and `index.js` code templates, which is where we will focus our efforts.
 
 #### index.html
-We see that the html template loads each of the stamps with data from `stamps.json` including an image, and an input field for setting an owners address. When a user presses the `Own` button, the intent is for the user-specified address to be recorded as the stamp's owner.
+We see that the html template has a basic layout with a text area that will be used to submit messages on this profile page. It also has a feed that will display those messages.
 
-#### app.js
-The template code has been provided and we just need to fill in the details.
+#### index.js
+The template code has been provided and we just need to fill in the details by adding in our clinetID and clientSecret to a .env file.
 ```
-const stampData = require('../stamps.json');
+//Requirements
+require('dotenv').config();
 const { link } = require('@blockmason/link-sdk');
-
-const ownershipProject = link({
-    clientId: '',
-    clientSecret: ''
-});
+const fetch = require('node-fetch');
+const project = link({
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET
+}, {
+        fetch
+    });
 ```
-We import the stamp data and the `@blockmason/link-sdk` package. We then need to provide the `clientId` and `clientSecret` from Link in order to use the `.get` and `.post` methods provided by the `link` object. 
+We import the `@blockmason/link-sdk` package. We then need to provide the `clientId` and `clientSecret` from Link in order to use the `.get` and `.post` methods provided by the `link` object. 
 
 > Copy and paste your specific `clientId` and `clientSecret` from the bottom of the Link IDE screen:
 
-![Link creds](images/link_creds.png)
+![Link creds](https://github.com/blockmason/simple-ownership-contract-demo/raw/master/images/link_creds.png)
 
 ```
-App = {
-    init: function() {
-        // Load stamps.
-        const stampsRow = $('#stampsRow');
-        const stampTemplate = $('#stampTemplate');
+    // Get All Messages
+    async function getMessages() {
+        var allMessages = project.get('/events/Message').then((message) => {
+            return message.data;
+        });
+
+        return allMessages;
+    }
+
+    // Set message
+    async function postMessage(newMessage) {
+        await project.post('/postMessage', {
+            message: newMessage,
+        }).then(() => {
+            // Clear existing feed to replace with updated feed.
+            removeMessages();
+            messages = [];
+
+            // Get new messages and format them to be added to DOM
+            updatedMessages = getMessages();
+            formatMessages(updatedMessages);
+        });
+    }
     
-        for (i = 0; i < stampData.length; i ++) {
-            stampTemplate.find('.panel-title').text(stampData[i].name);
-            stampTemplate.find('img').attr('src', stampData[i].picture);
-            stampTemplate.find('.stamp-location').text(stampData[i].location);
-            stampTemplate.find('.btn-own').attr('data-id', stampData[i].id);
-    
-            stampsRow.append(stampTemplate.html());
-            App.markOwned(i, stampData[i].id);
+    document.getElementById("submitMessage").onclick = function () { submitText() };
+
+    // The function to submit text from textArea
+    function submitText() {
+        if (textArea.value.trim() != "") {
+            messageObject = textArea.value.trim();
+            postMessage(messageObject);
+            textArea.value = "";
         }
-        return App.bindEvents();
-    },
-
-    bindEvents: function() {
-        $(document).on('click', '.btn-own', App.setOwnership);
-    },
-
+    }
 ```
 The above code:
-* Loads all the stamp data as part of our `stampTemplate` into our `stampRow` element.
+* Loads all the messages from the blockchain
 
-* Calls `App.markOwned(..)` which will check the blockchain for ownership records and mark an asset with its corresponding owner on the front-end.
-
-* Returns a button 'click' event listener
-
+* Submits a message to the blockchain from the textarea when the submit button is pressed 
 ```
-markOwned: async function(index, name) {
-    // Mark stamp ownership
-},
-```
-Here, we will call the `GET /ownerOf` API endpoint to retrive the owner of an asset value we pass. 
+function getProfile(userID) {
 
-![Get ownerOf](images/get_ownerof.png)
-
-Note the following:
-* We pass an attribute called `value` which is a string
-* We get a response object called `result` which is an address
-
-The `index` function argument is used to identify which `.panel-stamp` element is being referenced during the for loop in `App.init()`. Our completed code looks like the following:
-```
-markOwned: async function(index, name) {
-    const asset = {
-        "value": name
-    };  
-
-    const { result } = await ownershipProject.get('/ownerOf', asset);
-    
-    if (result !== '0x0000000000000000000000000000000000000000') {
-        $('.panel-stamp').eq(index).find('#ownerAddress').empty();
-        $('.panel-stamp').eq(index).find('#ownerAddress').append('Owner: ' + result).css({ wordWrap: "break-word" });
+        return new Promise(resolve => {
+            resolve(project.get('/getProfile', {
+                "id": userID}));
+        })
     }
-},
 ```
-Lastly, we need to complete the `setOwnership` function:
-```
-setOwnership: async function(event) {
-    event.preventDefault();
-    if (confirm("Confirm ownership of this stamp, which can take a few seconds to record on the blockchain")) {
-        const stampId = $(event.target).data('id');
-        const owner = $(event.target).closest("div.owner-address").find("input[name='owner']").val();
-        $(event.target).text("Processing").attr('disabled', true);
+Here, we will call the `GET /getProfile` API endpoint to retrive the profile information of the message poster. 
 
-    // Set Ownership code
+```
+ // Get All Messages
+    async function getMessages() {
+        var allMessages = project.get('/events/Message').then((message) => {
+            return message.data;
+        });
+
+        return allMessages;
     }
-}
-```
-Here, we will call the `POST /setOwner` API endpoint to set the owner of an asset with an address.
 
-![Set Ownership](images/post_setowner.png)
+    // Format Messages into message array and Print
+    async function formatMessages(unformatedMessages) {
 
-Note the following:
-* We pass an attribute called `asset` which is a string, and `owner` which is an address.
-* We don't get a response object
+        unformatedMessages.then(value => {
+            value.forEach(message => {
+                messages.push(message);
+            })
+        }).then(() => {
+            printMessages(messages);
+        });
+    }
 
-That last point is true if the POST request is successful. Otherwise, an `error` object is returned containing the error details. Our completed code looks like the following:
-```
-setOwnership: async function(event) {
-    event.preventDefault();
-    if (confirm("Confirm ownership of this stamp, which can take a few seconds to record on the blockchain")) {
-        const stampId = $(event.target).data('id');
-        const owner = $(event.target).closest("div.owner-address").find("input[name='owner']").val();
-        $(event.target).text("Processing").attr('disabled', true);
+    // Set message
+    async function postMessage(newMessage) {
+        await project.post('/postMessage', {
+            message: newMessage,
+        }).then(() => {
+            removeMessages();
+            messages = [];
 
-        const reqBody = {
-            "asset": stampId,
-            "owner": owner
-        };
+            updatedMessages = getMessages();
+            formatMessages(updatedMessages);
+        });
+    }
 
-        const response = await ownershipProject.post('/setOwner', reqBody);
-        
-        if(response.errors) {
-            alert(response.errors[0].detail);
-            $(event.target).text("Own").attr('disabled', false);
-        } 
-        else {
-            console.log('Post request successful');
-            $(event.target).text("Own").attr('disabled', false);
-            $(event.target).closest("div.owner-address").find("input[name='owner']").val('');  
-            $(event.target).parents(".panel-stamp").find("#ownerAddress").text('Owner: ' + owner);
+
+    // Set Profile
+    async function setProfile(idOfProfile) {
+        // Set some profile settings for the demo
+        const profilePost = {
+            "id": idOfProfile,
+            "displayName": "Mason Link",
+            "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
+        }
+
+        await project.post('/setProfile', profilePost);
+    }
+    // run this once to set up your profile
+    // setProfile(0);
+
+    // Get the profile data based on ID and update profile
+    function getProfile(userID) {
+
+        return new Promise(resolve => {
+            resolve(project.get('/getProfile', {
+                "id": userID}));
+        })
+    }
+
+    // Print profile data to profile
+    async function printProfile() {
+        var profileData = await getProfile(currentUser);
+        var profileDisplayName = document.createTextNode(profileData.displayName);
+        profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
+        profileUsername.appendChild(profileDisplayName);
+    }
+
+    // Format for message element
+    function printMessages() {
+        //Update the number of posts
+        profilePosts.innerText = ("Number of Posts: " + messages.length);
+
+        messages.forEach(async message => {
+            var messageUserData = await getProfile(message.senderId);
+            var messageUser = document.createTextNode(messageUserData.displayName);
+            var messageText = document.createTextNode('"' + message.message + '" — ');
+            var divElement = document.createElement("DIV");
+            var pElement = document.createElement("P");
+            var messagesFormated = divElement.appendChild(pElement);
+
+            messagesFormated.appendChild(messageText);
+            messagesFormated.appendChild(messageUser);
+
+            feed.appendChild(messagesFormated)
+        });
+    }
+
+    // Clear existing messages
+    function removeMessages() {
+        console.log('Cleared All Messages')
+        while (feed.firstChild) {
+            feed.removeChild(feed.firstChild);
         }
     }
-}
+
+    // The function to submit text from textArea
+    function submitText() {
+        if (textArea.value.trim() != "") {
+            messageObject = textArea.value.trim();
+            postMessage(messageObject);
+            textArea.value = "";
+        }
+    }
 ```
-Find the complete code in `app-complete.js`. 
+Find the complete code in `index.js`. 
 
 Note - we didn't use any complex or large libraries like `web3.js`, which requires an instance of the `Ownership` contract to be created before the contract function methods can be called. **Except for our confirm message, there is nothing in the code to even indicate that blockchains are involved!**
 
