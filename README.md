@@ -73,7 +73,7 @@ contract SocialNetwork {
 
 ![Social Network Link API](images/ownership_link_api.png)
 
-**That's it!** Our Ownership smart contract is automatically deployed to the Link private blockchain and we are ready to use our web API endpoints in our front-end DApp. 
+**That's it!** Our Social Network smart contract is automatically deployed to the Link private blockchain and we are ready to use our web API endpoints in our front-end DApp. 
 
 ### Configure DApp Front-End
 
