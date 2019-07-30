@@ -268,6 +268,8 @@ Note - we didn't use any complex or large libraries like `web3.js`, which requir
 npm start
 ```
 
+> Run the ```setProfile()``` function one time to set the url and profile name
+
 See the full command this executes under `scripts` in `package.json`. 
 
 Note the following:
