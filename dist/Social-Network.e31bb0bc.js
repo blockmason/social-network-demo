@@ -8144,6 +8144,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//Requirements
 require('dotenv').config();
 
 var _require = require('@blockmason/link-sdk'),
@@ -8156,83 +8157,41 @@ var project = link({
   clientSecret: "bWUVHLi3MdckDXDste1GTIzZ5sf/su65CswKuxFrx+QCKUcjFaVwmngB9hlX+3H"
 }, {
   fetch: fetch
-});
+}); //When Document Ready
+
 document.addEventListener("DOMContentLoaded", function (event) {
   feed = document.getElementById('feed');
   textArea = document.getElementById("textarea");
-  messages = []; // Set message
+  profileImage = document.getElementById("profile-image");
+  profileUsername = document.getElementById("user-name");
+  profilePosts = document.getElementById("number-of-posts");
 
-  function postMessage(_x) {
-    return _postMessage.apply(this, arguments);
-  } // Get All Messages
+  document.getElementById("submitMessage").onclick = function () {
+    submitText();
+  }; // For this demo we set the user to user 0
 
 
-  function _postMessage() {
-    _postMessage = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee(newMessage) {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return project.post('/postMessage', {
-                message: newMessage
-              }).then(function () {
-                removeMessages();
-                messages = [];
-                var allMessages = project.get('/events/Message').then(function (message) {
-                  return message.data;
-                });
-                allMessages.then(function (value) {
-                  value.forEach(function (message) {
-                    messages.push(message);
-                  });
-                }).then(function () {
-                  console.log('We have the new messages');
-                  console.log(messages);
-                  printMessages(messages);
-                });
-              });
+  currentUser = 0;
+  messages = []; // Get All Messages
 
-            case 2:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-    return _postMessage.apply(this, arguments);
-  }
+  function getMessages() {
+    return _getMessages.apply(this, arguments);
+  } // Format Messages into message array and Print
 
-  var allMessages = project.get('/events/Message').then(function (message) {
-    return message.data;
-  });
-  allMessages.then(function (value) {
-    value.forEach(function (message) {
-      messages.push(message);
-    });
-  }).then(function () {
-    printMessages(messages);
-  }); // Set Profile
 
-  function setProfile() {
-    return _setProfile.apply(this, arguments);
-  }
-
-  function _setProfile() {
-    _setProfile = _asyncToGenerator(
+  function _getMessages() {
+    _getMessages = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee2() {
+      var allMessages;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
-              return project.post('/setProfile', {
-                displayName: 'Mason',
-                avatarURL: 'https://blockmason.io/wp-content/uploads/2018/11/BMLogo_no-words_IconColor.png0x1111222233334444555566667777888899990000'
+              allMessages = project.get('/events/Message').then(function (message) {
+                return message.data;
               });
+              return _context2.abrupt("return", allMessages);
 
             case 2:
             case "end":
@@ -8241,23 +8200,192 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
       }, _callee2);
     }));
+    return _getMessages.apply(this, arguments);
+  }
+
+  function formatMessages(_x) {
+    return _formatMessages.apply(this, arguments);
+  } // Set message
+
+
+  function _formatMessages() {
+    _formatMessages = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee3(unformatedMessages) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              unformatedMessages.then(function (value) {
+                value.forEach(function (message) {
+                  messages.push(message);
+                });
+              }).then(function () {
+                printMessages(messages);
+              });
+
+            case 1:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+    return _formatMessages.apply(this, arguments);
+  }
+
+  function postMessage(_x2) {
+    return _postMessage.apply(this, arguments);
+  } // Set Profile
+
+
+  function _postMessage() {
+    _postMessage = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee4(newMessage) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return project.post('/postMessage', {
+                message: newMessage
+              }).then(function () {
+                removeMessages();
+                messages = [];
+                updatedMessages = getMessages();
+                formatMessages(updatedMessages);
+              });
+
+            case 2:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+    return _postMessage.apply(this, arguments);
+  }
+
+  function setProfile(_x3) {
+    return _setProfile.apply(this, arguments);
+  } // run this once to set up your profile
+  // setProfile(0);
+  // Get the profile data based on ID and update profile
+
+
+  function _setProfile() {
+    _setProfile = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee5(idOfProfile) {
+      var profilePost;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              // Set some profile settings for the demo
+              profilePost = {
+                "id": idOfProfile,
+                "displayName": "Mason Link",
+                "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
+              };
+              _context5.next = 3;
+              return project.post('/setProfile', profilePost);
+
+            case 3:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }));
     return _setProfile.apply(this, arguments);
   }
 
-  function printMessages() {
-    messages.forEach(function (message) {
-      var messageText = document.createTextNode(message.message + ' - ');
-      var messageDate = document.createTextNode(message.timestamp + ' - ');
-      var messageUser = document.createTextNode(message.senderId);
-      var divElement = document.createElement("DIV");
-      var pElement = document.createElement("P");
-      var messagesFormated = divElement.appendChild(pElement);
-      messagesFormated.appendChild(messageText);
-      messagesFormated.appendChild(messageDate);
-      messagesFormated.appendChild(messageUser);
-      feed.appendChild(messagesFormated);
+  function getProfile(userID) {
+    return new Promise(function (resolve) {
+      resolve(project.get('/getProfile', {
+        "id": userID
+      }));
     });
+  } // Print profile data to profile
+
+
+  function printProfile() {
+    return _printProfile.apply(this, arguments);
+  } // Format for message element
+
+
+  function _printProfile() {
+    _printProfile = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee6() {
+      var profileData, profileDisplayName;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return getProfile(currentUser);
+
+            case 2:
+              profileData = _context6.sent;
+              profileDisplayName = document.createTextNode(profileData.displayName);
+              profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
+              profileUsername.appendChild(profileDisplayName);
+
+            case 6:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }));
+    return _printProfile.apply(this, arguments);
   }
+
+  function printMessages() {
+    //Update the number of posts
+    profilePosts.innerText = "Number of Posts: " + messages.length;
+    messages.forEach(
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee(message) {
+        var messageUserData, messageUser, messageText, divElement, pElement, messagesFormated;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return getProfile(message.senderId);
+
+              case 2:
+                messageUserData = _context.sent;
+                messageUser = document.createTextNode(messageUserData.displayName);
+                messageText = document.createTextNode('"' + message.message + '" — ');
+                divElement = document.createElement("DIV");
+                pElement = document.createElement("P");
+                messagesFormated = divElement.appendChild(pElement);
+                messagesFormated.appendChild(messageText);
+                messagesFormated.appendChild(messageUser);
+                feed.appendChild(messagesFormated);
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function (_x4) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+  } // Clear existing messages
+
 
   function removeMessages() {
     console.log('Cleared All Messages');
@@ -8265,11 +8393,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     while (feed.firstChild) {
       feed.removeChild(feed.firstChild);
     }
-  }
+  } // The function to submit text from textArea
 
-  document.getElementById("submitMessage").onclick = function () {
-    submitText();
-  };
 
   function submitText() {
     if (textArea.value.trim() != "") {
@@ -8277,9 +8402,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
       postMessage(messageObject);
       textArea.value = "";
     }
-  }
+  } //Initialization
 
-  printMessages();
+
+  printProfile(currentUser);
+  var startingMessages = getMessages();
+  formatMessages(startingMessages);
 });
 },{"dotenv":"node_modules/dotenv/lib/main.js","@blockmason/link-sdk":"node_modules/@blockmason/link-sdk/index.js","node-fetch":"node_modules/node-fetch/browser.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -8309,7 +8437,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51857" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57716" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

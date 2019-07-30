@@ -122,3 +122,8 @@ textarea {
 span {
     color: darkgrey;
 }
+
+#number-of-posts{
+    font-size: 0.8em;
+    color: #55aee9;
+}

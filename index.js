@@ -1,3 +1,4 @@
+//Requirements
 require('dotenv').config();
 const { link } = require('@blockmason/link-sdk');
 const fetch = require('node-fetch');
@@ -7,11 +8,41 @@ const project = link({
 }, {
         fetch
     });
-    
+
+//When Document Ready
 document.addEventListener("DOMContentLoaded", function (event) {
     feed = document.getElementById('feed');
     textArea = document.getElementById("textarea");
+    profileImage = document.getElementById("profile-image");
+    profileUsername = document.getElementById("user-name");
+    profilePosts = document.getElementById("number-of-posts");
+    document.getElementById("submitMessage").onclick = function () { submitText() };
+
+    // For this demo we set the user to user 0
+    currentUser = 0;
     messages = [];
+
+
+    // Get All Messages
+    async function getMessages() {
+        var allMessages = project.get('/events/Message').then((message) => {
+            return message.data;
+        });
+
+        return allMessages;
+    }
+
+    // Format Messages into message array and Print
+    async function formatMessages(unformatedMessages) {
+
+        unformatedMessages.then(value => {
+            value.forEach(message => {
+                messages.push(message);
+            })
+        }).then(() => {
+            printMessages(messages);
+        });
+    }
 
     // Set message
     async function postMessage(newMessage) {
@@ -21,63 +52,64 @@ document.addEventListener("DOMContentLoaded", function (event) {
             removeMessages();
             messages = [];
 
-            var allMessages = project.get('/events/Message').then((message) => {
-                return message.data;
-            });
-
-            allMessages.then(value => {
-                value.forEach(message => {
-                    messages.push(message);
-                })
-            }).then(() => {
-                console.log('We have the new messages');
-                console.log(messages);
-                printMessages(messages);
-            });
+            updatedMessages = getMessages();
+            formatMessages(updatedMessages);
         });
     }
-
-    // Get All Messages
-    var allMessages = project.get('/events/Message').then((message) => {
-        return message.data;
-    });
-
-
-    allMessages.then(value => {
-        value.forEach(message => {
-            messages.push(message);
-        })
-    }).then(() => {
-        printMessages(messages);
-    });
 
 
     // Set Profile
-    async function setProfile() {
-        await project.post('/setProfile', {
-            displayName: 'Mason',
-            avatarURL: 'https://blockmason.io/wp-content/uploads/2018/11/BMLogo_no-words_IconColor.png0x1111222233334444555566667777888899990000'
-        });
+    async function setProfile(idOfProfile) {
+        // Set some profile settings for the demo
+        const profilePost = {
+            "id": idOfProfile,
+            "displayName": "Mason Link",
+            "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
+        }
+
+        await project.post('/setProfile', profilePost);
+    }
+    // run this once to set up your profile
+    // setProfile(0);
+
+    // Get the profile data based on ID and update profile
+    function getProfile(userID) {
+
+        return new Promise(resolve => {
+            resolve(project.get('/getProfile', {
+                "id": userID}));
+        })
     }
 
+    // Print profile data to profile
+    async function printProfile() {
+        var profileData = await getProfile(currentUser);
+        var profileDisplayName = document.createTextNode(profileData.displayName);
+        profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
+        profileUsername.appendChild(profileDisplayName);
+    }
+
+    // Format for message element
     function printMessages() {
-        messages.forEach(message => {
-            var messageText = document.createTextNode(message.message + ' - ');
-            var messageDate = document.createTextNode(message.timestamp + ' - ');
-            var messageUser = document.createTextNode(message.senderId);
+        //Update the number of posts
+        profilePosts.innerText = ("Number of Posts: " + messages.length);
+
+        messages.forEach(async message => {
+            var messageUserData = await getProfile(message.senderId);
+            var messageUser = document.createTextNode(messageUserData.displayName);
+            var messageText = document.createTextNode('"' + message.message + '" — ');
             var divElement = document.createElement("DIV");
             var pElement = document.createElement("P");
-
             var messagesFormated = divElement.appendChild(pElement);
 
             messagesFormated.appendChild(messageText);
-            messagesFormated.appendChild(messageDate);
             messagesFormated.appendChild(messageUser);
 
             feed.appendChild(messagesFormated)
         });
     }
 
+    // Clear existing messages
     function removeMessages() {
         console.log('Cleared All Messages')
         while (feed.firstChild) {
@@ -85,8 +117,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
     }
 
-    document.getElementById("submitMessage").onclick = function () { submitText() };
-
+    // The function to submit text from textArea
     function submitText() {
         if (textArea.value.trim() != "") {
             messageObject = textArea.value.trim();
@@ -95,6 +126,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
     }
 
-    printMessages();
+    //Initialization
+    printProfile(currentUser);
+    var startingMessages = getMessages();
+    formatMessages(startingMessages);
 
 });
