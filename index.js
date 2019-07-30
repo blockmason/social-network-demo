@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 
     // Get All Messages
-    async function getMessages() {
+    function getMessages() {
         var allMessages = project.get('/events/Message').then((message) => {
             return message.data;
         });
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     // Format Messages into message array and Print
-    async function formatMessages(unformatedMessages) {
+    function formatMessages(unformatedMessages) {
 
         unformatedMessages.then(value => {
             value.forEach(message => {

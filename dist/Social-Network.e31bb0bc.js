@@ -8175,66 +8175,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
   messages = []; // Get All Messages
 
   function getMessages() {
-    return _getMessages.apply(this, arguments);
+    var allMessages = project.get('/events/Message').then(function (message) {
+      return message.data;
+    });
+    return allMessages;
   } // Format Messages into message array and Print
 
 
-  function _getMessages() {
-    _getMessages = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee2() {
-      var allMessages;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              allMessages = project.get('/events/Message').then(function (message) {
-                return message.data;
-              });
-              return _context2.abrupt("return", allMessages);
-
-            case 2:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-    return _getMessages.apply(this, arguments);
-  }
-
-  function formatMessages(_x) {
-    return _formatMessages.apply(this, arguments);
+  function formatMessages(unformatedMessages) {
+    unformatedMessages.then(function (value) {
+      value.forEach(function (message) {
+        messages.push(message);
+      });
+    }).then(function () {
+      printMessages(messages);
+    });
   } // Set message
 
 
-  function _formatMessages() {
-    _formatMessages = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee3(unformatedMessages) {
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              unformatedMessages.then(function (value) {
-                value.forEach(function (message) {
-                  messages.push(message);
-                });
-              }).then(function () {
-                printMessages(messages);
-              });
-
-            case 1:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }));
-    return _formatMessages.apply(this, arguments);
-  }
-
-  function postMessage(_x2) {
+  function postMessage(_x) {
     return _postMessage.apply(this, arguments);
   } // Set Profile
 
@@ -8242,12 +8201,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
   function _postMessage() {
     _postMessage = _asyncToGenerator(
     /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee4(newMessage) {
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    regeneratorRuntime.mark(function _callee2(newMessage) {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _context4.next = 2;
+              _context2.next = 2;
               return project.post('/postMessage', {
                 message: newMessage
               }).then(function () {
@@ -8259,15 +8218,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             case 2:
             case "end":
-              return _context4.stop();
+              return _context2.stop();
           }
         }
-      }, _callee4);
+      }, _callee2);
     }));
     return _postMessage.apply(this, arguments);
   }
 
-  function setProfile(_x3) {
+  function setProfile(_x2) {
     return _setProfile.apply(this, arguments);
   } // run this once to set up your profile
   // setProfile(0);
@@ -8277,11 +8236,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
   function _setProfile() {
     _setProfile = _asyncToGenerator(
     /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee5(idOfProfile) {
+    regeneratorRuntime.mark(function _callee3(idOfProfile) {
       var profilePost;
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               // Set some profile settings for the demo
               profilePost = {
@@ -8289,15 +8248,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 "displayName": "Mason Link",
                 "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
               };
-              _context5.next = 3;
+              _context3.next = 3;
               return project.post('/setProfile', profilePost);
 
             case 3:
             case "end":
-              return _context5.stop();
+              return _context3.stop();
           }
         }
-      }, _callee5);
+      }, _callee3);
     }));
     return _setProfile.apply(this, arguments);
   }
@@ -8319,27 +8278,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
   function _printProfile() {
     _printProfile = _asyncToGenerator(
     /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee6() {
+    regeneratorRuntime.mark(function _callee4() {
       var profileData, profileDisplayName;
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _context6.next = 2;
+              _context4.next = 2;
               return getProfile(currentUser);
 
             case 2:
-              profileData = _context6.sent;
+              profileData = _context4.sent;
               profileDisplayName = document.createTextNode(profileData.displayName);
               profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
               profileUsername.appendChild(profileDisplayName);
 
             case 6:
             case "end":
-              return _context6.stop();
+              return _context4.stop();
           }
         }
-      }, _callee6);
+      }, _callee4);
     }));
     return _printProfile.apply(this, arguments);
   }
@@ -8380,7 +8339,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }, _callee);
       }));
 
-      return function (_x4) {
+      return function (_x3) {
         return _ref.apply(this, arguments);
       };
     }());
@@ -8437,7 +8396,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57716" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63497" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
