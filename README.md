@@ -22,11 +22,13 @@ You will need to setup the following for this activity:
 
 > Clone the Github repo: https://github.com/blockmason/social-network-demo into a new folder.
 
->  In the new folder, run `npm install` which will install the following key dependencies:
+> In the new folder, run `npm install` which will install the following key dependencies:
 
 * `@blockmason/link-sdk` - https://www.npmjs.com/package/@blockmason/link-sdk - a simple SDK for interacting with the Link project.
 
 * `parcel-bundler` - https://parceljs.org/getting_started.html - for bundling and running the web application
+
+> Create a .env file in the project folder
 
 > Create a Blockmason Link account - register at https://mason.link/sign-up and then setup your demo organization.
 
@@ -99,6 +101,8 @@ const project = link({
 We import the `@blockmason/link-sdk` package. We then need to provide the `clientId` and `clientSecret` from Link in order to use the `.get` and `.post` methods provided by the `link` object. 
 
 > Copy and paste your specific `clientId` and `clientSecret` from the bottom of the Link IDE screen:
+
+> In the .env file add ```CLIENT_ID="<YOUR-CLIENT_ID>" CLIENT_SECRET=<YOUR-CLIENT-SECRET>```
 
 ![Link creds](https://github.com/blockmason/simple-ownership-contract-demo/raw/master/images/link_creds.png)
 
