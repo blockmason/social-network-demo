@@ -20,48 +20,43 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // For this demo we set the user to user 0
     currentUser = 0;
-    messages = [];
-
+    messageArray = [];
+    currentUserDisplayName = '';
 
     // Get All Messages
-    function getMessages() {
-        var allMessages = project.get('/events/Message').then((message) => {
-            return message.data;
-        });
+    async function getMessages() {
+        let allMessages = await project.get('/events/Message');
 
         return allMessages;
     }
 
     // Format Messages into message array and Print
-    function formatMessages(unformatedMessages) {
+    async function formatMessages() {
 
-        unformatedMessages.then(value => {
-            value.forEach(message => {
-                messages.push(message);
-            })
-        }).then(() => {
-            printMessages(messages);
-        });
+        messagesJSON = await getMessages();
+
+        messagesJSON.data.forEach(message => {
+                messageArray.push(message);
+        })
+
+        printMessages();
     }
 
-    // Set message
+    // Post a new message
     async function postMessage(newMessage) {
-        await project.post('/postMessage', {
-            message: newMessage,
-        }).then(() => {
-            removeMessages();
-            messages = [];
 
-            updatedMessages = getMessages();
-            formatMessages(updatedMessages);
-        });
+        await project.post('/postMessage', { message: newMessage });
+        
+        removeMessages();
+        messageArray = [];
+        formatMessages();
     }
 
 
     // Set Profile
     async function setProfile(idOfProfile) {
         // Set some profile settings for the demo
-        const profilePost = {
+        let profilePost = {
             "id": idOfProfile,
             "displayName": "Mason Link",
             "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
@@ -72,36 +67,40 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // run this once to set up your profile
     // setProfile(0);
 
-    // Get the profile data based on ID and update profile
-    function getProfile(userID) {
+    // Get the profile data based on ID
+    async function getProfile(userID) {
 
-        return new Promise(resolve => {
-            resolve(project.get('/getProfile', {
+        let profileData = await project.get('/getProfile', {
                 "id": userID
-            }));
-        })
+            });
+
+        return profileData;
     }
 
     // Print profile data to profile
     async function printProfile() {
-        var profileData = await getProfile(currentUser);
-        var profileDisplayName = document.createTextNode(profileData.displayName);
+        
+        let profileData = await getProfile(currentUser);
+        currentUserDisplayName = profileData.displayName;
+        
+        let profileDisplayName = document.createTextNode(currentUserDisplayName);
+        
         profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
+        
         profileUsername.appendChild(profileDisplayName);
     }
 
     // Format for message element
     function printMessages() {
         //Update the number of posts
-        profilePosts.innerText = ("Number of Posts: " + messages.length);
+        profilePosts.innerText = ("Number of Posts: " + messageArray.length);
 
-        messages.forEach(async message => {
-            var messageUserData = await getProfile(message.senderId);
-            var messageUser = document.createTextNode(messageUserData.displayName);
-            var messageText = document.createTextNode('"' + message.message + '" — ');
-            var divElement = document.createElement("DIV");
-            var pElement = document.createElement("P");
-            var messagesFormated = divElement.appendChild(pElement);
+        messageArray.forEach(async message => {
+            let messageUser = document.createTextNode(currentUserDisplayName);
+            let messageText = document.createTextNode('"' + message.message + '" — ');
+            let divElement = document.createElement("DIV");
+            let pElement = document.createElement("P");
+            let messagesFormated = divElement.appendChild(pElement);
 
             messagesFormated.appendChild(messageText);
             messagesFormated.appendChild(messageUser);
@@ -129,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     //Initialization
     printProfile(currentUser);
-    var startingMessages = getMessages();
-    formatMessages(startingMessages);
+    getMessages();
+    formatMessages();
 
 });
