@@ -102,44 +102,23 @@ We import the `@blockmason/link-sdk` package. We then need to provide the `clien
 
 > Copy and paste your specific `clientId` and `clientSecret` from the bottom of the Link IDE screen:
 
-> In the .env file add ```CLIENT_ID="<YOUR-CLIENT_ID>" CLIENT_SECRET=<YOUR-CLIENT-SECRET>```
+> In the .env file add ```CLIENT_ID="<YOUR-CLIENT_ID>" CLIENT_SECRET="<YOUR-CLIENT-SECRET>"```
 
 ![Link creds](https://github.com/blockmason/simple-ownership-contract-demo/raw/master/images/link_creds.png)
 
 ```
     // Get All Messages
     async function getMessages() {
-        var allMessages = project.get('/events/Message').then((message) => {
-            return message.data;
-        });
+        let allMessages = await project.get('/events/Message');
 
         return allMessages;
     }
 
-    // Set message
+    // Post a Message
     async function postMessage(newMessage) {
-        await project.post('/postMessage', {
-            message: newMessage,
-        }).then(() => {
-            // Clear existing feed to replace with updated feed.
-            removeMessages();
-            messages = [];
 
-            // Get new messages and format them to be added to DOM
-            updatedMessages = getMessages();
-            formatMessages(updatedMessages);
-        });
-    }
-    
-    document.getElementById("submitMessage").onclick = function () { submitText() };
-
-    // The function to submit text from textArea
-    function submitText() {
-        if (textArea.value.trim() != "") {
-            messageObject = textArea.value.trim();
-            postMessage(messageObject);
-            textArea.value = "";
-        }
+        await project.post('/postMessage', { message: newMessage });
+        
     }
 ```
 The above code:
