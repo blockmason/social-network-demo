@@ -10,7 +10,7 @@ const project = link({
 });
 
 //When Document Ready
-document.addEventListener("DOMContentLoaded", function (event) {
+document.addEventListener("DOMContentLoaded", async function (event) {
     feed = document.getElementById('feed');
     textArea = document.getElementById("textarea");
     profileImage = document.getElementById("profile-image");
@@ -45,13 +45,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Post a new message
     async function postMessage(newMessage) {
 
-        await project.post('/postMessage', { message: newMessage });
-        
+        messageObject = { message: newMessage }
+        messageArray.push(messageObject);
         removeMessages();
-        messageArray = [];
-        formatMessages();
+        printMessages();
+        
+        await project.post('/postMessage', { message: newMessage });
     }
-
 
     // Set Profile
     async function setProfile(idOfProfile) {
@@ -127,8 +127,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     //Initialization
-    printProfile(currentUser);
-    getMessages();
+    await printProfile(currentUser);
     formatMessages();
 
 });
