@@ -148,7 +148,7 @@ The above code:
         await project.post('/setProfile', profilePost);
     }
 ```
-Here, we will call the `GET /getProfile` API endpoint to retrieve the profile data, and 'POST /setProfile' to set the profile image and name. 
+Here, we will call the `GET /getProfile` API endpoint to retrieve the profile data, and `POST /setProfile` to set the profile image and name. 
 
 > Find the complete code in `index.js`. 
 
