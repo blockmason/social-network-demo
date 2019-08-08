@@ -64,8 +64,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         await project.post('/setProfile', profilePost);
     }
-    // run this once to set up your profile
-    // setProfile(0);
+    // run this once to set up your profile, then just comment it out.
+    setProfile(currentUser);
 
     // Get the profile data based on ID
     async function getProfile(userID) {

@@ -118,131 +118,41 @@ We import the `@blockmason/link-sdk` package. We then need to provide the `clien
     async function postMessage(newMessage) {
 
         await project.post('/postMessage', { message: newMessage });
-        
+
     }
 ```
 The above code:
 * Loads all the messages from the blockchain
 
-* Submits a message to the blockchain from the textarea when the submit button is pressed 
+* Submits a message to the blockchain 
 ```
-function getProfile(userID) {
+    // Get The Profile Data Based on ID
+    async function getProfile(userID) {
 
-        return new Promise(resolve => {
-            resolve(project.get('/getProfile', {
-                "id": userID}));
-        })
-    }
-```
-Here, we will call the `GET /getProfile` API endpoint to retrive the profile information of the message poster. 
+        let profileData = await project.get('/getProfile', {
+                "id": userID
+            });
 
-```
-// Get All Messages
-async function getMessages() {
-    var allMessages = project.get('/events/Message').then((message) => {
-        return message.data;
-    });
-
-    return allMessages;
-}
-
-// Format Messages into message array and Print
-async function formatMessages(unformatedMessages) {
-
-    unformatedMessages.then(value => {
-        value.forEach(message => {
-            messages.push(message);
-        })
-    }).then(() => {
-        printMessages(messages);
-    });
-}
-
-// Set message
-async function postMessage(newMessage) {
-    await project.post('/postMessage', {
-        message: newMessage,
-    }).then(() => {
-        removeMessages();
-        messages = [];
-
-        updatedMessages = getMessages();
-        formatMessages(updatedMessages);
-    });
-}
-
-
-// Set Profile
-async function setProfile(idOfProfile) {
-    // Set some profile settings for the demo
-    const profilePost = {
-        "id": idOfProfile,
-        "displayName": "Mason Link",
-        "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
+        return profileData;
     }
 
-    await project.post('/setProfile', profilePost);
-}
-// run this once to set up your profile
-// setProfile(0);
+    // Set Profile Data Based on ID
+    async function setProfile(idOfProfile) {
+        // Set some profile settings for the demo
+        let profilePost = {
+            "id": idOfProfile,
+            "displayName": "Mason Link",
+            "avatarUrl": 'https://blockmason.link/wp-content/uploads/2019/04/download.jpg'
+        }
 
-// Get the profile data based on ID and update profile
-function getProfile(userID) {
-
-    return new Promise(resolve => {
-        resolve(project.get('/getProfile', {
-            "id": userID}));
-    })
-}
-
-// Print profile data to profile
-async function printProfile() {
-    var profileData = await getProfile(currentUser);
-    var profileDisplayName = document.createTextNode(profileData.displayName);
-    profileImage.style.cssText = "background-image: url(" + profileData.avatarUrl + ")";
-    profileUsername.appendChild(profileDisplayName);
-}
-
-// Format for message element
-function printMessages() {
-    //Update the number of posts
-    profilePosts.innerText = ("Number of Posts: " + messages.length);
-
-    messages.forEach(async message => {
-        var messageUserData = await getProfile(message.senderId);
-        var messageUser = document.createTextNode(messageUserData.displayName);
-        var messageText = document.createTextNode('"' + message.message + '" — ');
-        var divElement = document.createElement("DIV");
-        var pElement = document.createElement("P");
-        var messagesFormated = divElement.appendChild(pElement);
-
-        messagesFormated.appendChild(messageText);
-        messagesFormated.appendChild(messageUser);
-
-        feed.appendChild(messagesFormated)
-    });
-}
-
-// Clear existing messages
-function removeMessages() {
-    console.log('Cleared All Messages')
-    while (feed.firstChild) {
-        feed.removeChild(feed.firstChild);
+        await project.post('/setProfile', profilePost);
     }
-}
-
-// The function to submit text from textArea
-function submitText() {
-    if (textArea.value.trim() != "") {
-        messageObject = textArea.value.trim();
-        postMessage(messageObject);
-        textArea.value = "";
-    }
-}
 ```
-Find the complete code in `index.js`. 
+Here, we will call the `GET /getProfile` API endpoint to retrieve the profile data, and 'POST /setProfile' to set the profile image and name. 
 
-Note - we didn't use any complex or large libraries like `web3.js`, which requires an instance of the `Ownership` contract to be created before the contract function methods can be called. **Except for our confirm message, there is nothing in the code to even indicate that blockchains are involved!**
+> Find the complete code in `index.js`. 
+
+Note - we didn't use any complex or large libraries like `web3.js`, which requires an instance of the `SocialNetwork` contract to be created before the contract function methods can be called. **Except for our confirm message, there is nothing in the code to even indicate that blockchains are involved!**
 
 ### Run your DApp
 
@@ -250,10 +160,9 @@ Note - we didn't use any complex or large libraries like `web3.js`, which requir
 ```
 npm start
 ```
-
-> Run the ```setProfile()``` function one time to set the url and profile name
-
 See the full command this executes under `scripts` in `package.json`. 
+
+> Run the ```setProfile()``` function once to set the url and profile name (running more than once will result in an error ```{"errors":[{"detail":"Authentication failed"}],"jsonapi":"1.0","meta":{"name":"@blockmason/link-api","version":"1.16.1"}}```)
 
 Note the following:
 * By default, the DApp will run at https://localhost:1234 . You can specify the `-p` flag in the scripts command in `package.json` if you want to use a specific port.
